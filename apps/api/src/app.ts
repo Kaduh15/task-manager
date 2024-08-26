@@ -44,6 +44,7 @@ class App {
     })
 
     this.app.use('/api/auth', routes.authRouter)
+    this.app.use('/api/task', routes.taskRouter)
 
     this.app.use('*', (_req, res) => {
       res.status(404).json({ message: 'Not found' })
