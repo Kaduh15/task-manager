@@ -8,6 +8,7 @@ import 'express-async-errors'
 
 import errorMiddleware from '@/middlewares/error.middleware'
 import loggerMiddleware from '@/middlewares/logger.middleware'
+import * as routes from '@/routes'
 
 const swaggerPath = path.resolve(__dirname, './docs/swagger.yml')
 const swaggerDocument = YAML.load(swaggerPath)
@@ -42,9 +43,7 @@ class App {
       res.status(200).json({ Hello: 'world!' })
     })
 
-    this.app.post('/api/', (_req, res) => {
-      res.status(201).json({ message: 'Nova mensagem criada!' })
-    })
+    this.app.use('/api/auth', routes.authRouter)
 
     this.app.use('*', (_req, res) => {
       res.status(404).json({ message: 'Not found' })
