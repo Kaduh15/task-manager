@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import z from 'zod'
 
 import { TaskService } from '@/services/task.service'
-import { ForbiddenError, NotFoundError } from '@/utils/http-errors'
+import { ForbiddenError } from '@/utils/http-errors'
 import { HttpStatus } from '@/utils/http-status'
 
 export class TaskController {
@@ -109,7 +109,7 @@ export class TaskController {
   }
 
   delete = async (req: Request, res: Response) => {
-    const params = z
+    const { id } = z
       .object({
         id: z.string(),
       })
@@ -121,16 +121,8 @@ export class TaskController {
       throw new ForbiddenError('You are not allowed to delete this task')
     }
 
-    const task = await this.taskService.getById({ id: params.id, userId })
+    await this.taskService.delete({ id, userId })
 
-    if (!task) {
-      throw new NotFoundError('Task not found')
-    }
-
-    if (task.userId !== userId) {
-      throw new ForbiddenError('You are not allowed to delete this task')
-    }
-
-    return res.status(HttpStatus.OK).json({ message: 'Task deleted' })
+    return res.sendStatus(HttpStatus.NO_CONTENT)
   }
 }

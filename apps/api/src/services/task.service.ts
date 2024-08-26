@@ -107,9 +107,9 @@ export class TaskService {
     return task
   }
 
-  delete = async (id: string) => {
+  delete = async ({ id, userId }: { id: string; userId: string }) => {
     const task = await prisma.task.findUnique({
-      where: { id },
+      where: { id, userId },
     })
 
     if (!task) {
