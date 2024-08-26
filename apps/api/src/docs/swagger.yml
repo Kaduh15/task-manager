@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: Task Manager API
+  description: API para gerenciamento de tarefas
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3001/api
+    description: Servidor local
+
+paths:
+  /:
+    get:
+      summary: Retorna uma mensagem de saudação
+      responses:
+        '200':
+          description: Mensagem de saudação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Hello, world!'
+    post:
+      summary: Cria uma nova mensagem
+      requestBody:
+        description: Mensagem para ser criada
+        # required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '201':
+          description: Mensagem criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Requisição inválida
+
+components:
+  schemas:
+    Message:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          example: 'Nova mensagem criada!'
