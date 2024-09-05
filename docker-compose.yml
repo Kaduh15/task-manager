@@ -1,0 +1,25 @@
+services:
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    ports:
+      - ${PORT:-3000}:3000
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      DATABASE_URL: mysql://${DB_USER:-admin}:${DB_PASSWORD:-admin}@db:3306/${DB_NAME:-mydb}
+      JWT_SECRET: ${JWT_SECRET:-secret}
+    healthcheck:
+      test: [ "CMD", "lsof", "-t", "-i:3000" ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    depends_on:
+    networks:
+      - app_net
+
+networks:
+  app_net:
+    driver: bridge

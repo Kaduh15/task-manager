@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compose:up": "docker-compose up -d --build --remove-orphans",
+    "compose:down": "docker-compose down",
+    "compose:up:dev": "docker-compose -f docker-compose.dev.yml up -d --build --remove-orphans",
+    "compose:down:dev": "docker-compose -f docker-compose.dev.yml down",
+    "compose:logs": "docker-compose logs -f",
+    "compose:ps": "docker-compose ps"
   },
   "keywords": [],
   "author": "",
