@@ -32,6 +32,7 @@ export class TaskService {
         }
 
         acc.tasks.push({
+          id: task.id,
           tile: task.title,
           description: task.description,
           completed: task.completed,
@@ -44,6 +45,7 @@ export class TaskService {
       {
         user: { id: '', name: '' },
         tasks: [] as {
+          id: string
           tile: string
           description: string | null
           completed: boolean
