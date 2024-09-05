@@ -10,7 +10,7 @@ import errorMiddleware from '@/middlewares/error.middleware'
 import loggerMiddleware from '@/middlewares/logger.middleware'
 import * as routes from '@/routes'
 
-const swaggerPath = path.resolve(__dirname, './docs/swagger.yml')
+const swaggerPath = path.resolve(__dirname, '../docs/swagger.yml')
 const swaggerDocument = YAML.load(swaggerPath)
 
 class App {
@@ -39,15 +39,11 @@ class App {
   private routes(): void {
     this.app.get('/docs', swaggerUi.setup(swaggerDocument))
 
-    this.app.get('/', (_req, res) => {
-      res.status(200).json({ Hello: 'world!' })
-    })
-
     this.app.use('/api/auth', routes.authRouter)
     this.app.use('/api/task', routes.taskRouter)
 
     this.app.use('*', (_req, res) => {
-      res.status(404).json({ message: 'Not found' })
+      res.redirect('/docs')
     })
 
     this.app.use(errorMiddleware)

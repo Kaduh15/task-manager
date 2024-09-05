@@ -64,6 +64,13 @@ export class AuthService {
       },
     })
 
-    return createdUser
+    const token = sign({ sub: createdUser.id }, env.JWT_SECRET, {
+      expiresIn: '1d',
+    })
+
+    return {
+      ...createdUser,
+      token,
+    }
   }
 }
