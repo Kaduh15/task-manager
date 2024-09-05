@@ -9,12 +9,14 @@ const taskController = new TaskController(taskService)
 
 const taskRouter: Router = Router()
 
-taskRouter.get('/', authMiddleware, taskController.getAll)
-taskRouter.get('/:id', authMiddleware, taskController.getById)
-taskRouter.post('/', authMiddleware, taskController.create)
-taskRouter.put('/:id/un-completed', authMiddleware, taskController.unCompleted)
-taskRouter.put('/:id/completed', authMiddleware, taskController.completed)
-taskRouter.put('/:id', authMiddleware, taskController.update)
-taskRouter.delete('/', authMiddleware, taskController.delete)
+taskRouter.use(authMiddleware)
+
+taskRouter.get('/', taskController.getAll)
+taskRouter.get('/:id', taskController.getById)
+taskRouter.post('/', taskController.create)
+taskRouter.put('/:id/un-completed', taskController.unCompleted)
+taskRouter.put('/:id/completed', taskController.completed)
+taskRouter.put('/:id', taskController.update)
+taskRouter.delete('/', taskController.delete)
 
 export { taskRouter }

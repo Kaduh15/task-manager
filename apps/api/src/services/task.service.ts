@@ -15,29 +15,97 @@ export class TaskService {
   getAll = async (id: string) => {
     const tasks = await prisma.task.findMany({
       where: { userId: id },
+      include: { user: true },
     })
 
-    return tasks
+    if (!tasks) {
+      throw new NotFoundError('User not found')
+    }
+
+    const { user, tasks: tasksData } = tasks.reduce(
+      (acc, task, index) => {
+        if (index === 0) {
+          acc.user = {
+            id: task.user.id,
+            name: task.user.name,
+          }
+        }
+
+        acc.tasks.push({
+          tile: task.title,
+          description: task.description,
+          completed: task.completed,
+          createdAt: task.createdAt,
+          updatedAt: task.updatedAt,
+        })
+
+        return acc
+      },
+      {
+        user: { id: '', name: '' },
+        tasks: [] as {
+          tile: string
+          description: string | null
+          completed: boolean
+          createdAt: Date
+          updatedAt: Date
+        }[],
+      },
+    )
+
+    return {
+      user: {
+        id: user.id,
+        name: user.name,
+      },
+      tasks: tasksData,
+    }
   }
 
   getById = async ({ userId, id }: GetTaskById) => {
     const task = await prisma.task.findUnique({
       where: { userId, id },
+      include: { user: true },
     })
 
     if (!task) {
       throw new NotFoundError('Task not found')
     }
 
-    return task
+    const { title, description, completed, createdAt, updatedAt, user } = task
+
+    return {
+      title,
+      description,
+      completed,
+      createdAt,
+      updatedAt,
+      user: {
+        id: user.id,
+        name: user.name,
+      },
+    }
   }
 
   create = async ({ description = null, title, userId }: CreateTask) => {
     const task = await prisma.task.create({
       data: { description, title, userId },
+      include: { user: true },
     })
 
-    return task
+    const { completed, createdAt, updatedAt, user } = task
+
+    return {
+      title,
+      description,
+      completed,
+      createdAt,
+      updatedAt,
+      user: {
+        id: user.id,
+        name: user.name,
+      },
+    }
   }
 
   update = async ({ userId, id, ...task }: UpdateTask) => {
@@ -56,9 +124,22 @@ export class TaskService {
     const updatedTask = await prisma.task.update({
       data: task,
       where: { id, userId },
+      include: { user: true },
     })
 
-    return updatedTask
+    const { completed, createdAt, updatedAt, user } = updatedTask
+
+    return {
+      title: updatedTask.title,
+      description: updatedTask.description,
+      completed,
+      createdAt,
+      updatedAt,
+      user: {
+        id: user.id,
+        name: user.name,
+      },
+    }
   }
 
   completed = async ({ id, userId }: { id: string; userId: string }) => {

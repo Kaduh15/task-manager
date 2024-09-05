@@ -27,11 +27,15 @@ class App {
     this.app.use(
       cors({
         origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization'],
       }),
     )
-    this.app.use(express.json())
+    this.app.use(
+      express.json({
+        limit: '10mb',
+      }),
+    )
     this.app.use(loggerMiddleware)
     this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
   }

@@ -1,23 +1,25 @@
 import { NextFunction, Request, Response } from 'express'
 import { ZodType } from 'zod'
 
-export default function requestValidationMiddleware(schema: ZodType) {
+type RequestSchema = {
+  body?: ZodType
+  query?: ZodType
+  params?: ZodType
+}
+
+export default function requestValidationMiddleware(schema: RequestSchema) {
   return (req: Request, res: Response, next: NextFunction) => {
-    const validation = schema.safeParse(req)
-
-    if (!validation.success) {
-      const errors: {
-        [k: string]: string
-      } = {}
-
-      validation.error.issues.forEach((issue) => {
-        errors[issue.path[0]] = issue.message
-      })
-
-      return res.status(400).json({ errors })
+    const validateField = (key: keyof RequestSchema, zodSchema?: ZodType) => {
+      if (zodSchema) {
+        const data = zodSchema.parse(req[key])
+        req[key] = data
+      }
     }
 
-    req.body = validation.data
+    validateField('body', schema.body)
+    validateField('query', schema.query)
+    validateField('params', schema.params)
+
     return next()
   }
 }
