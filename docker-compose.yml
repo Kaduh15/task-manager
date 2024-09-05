@@ -20,6 +20,30 @@ services:
     networks:
       - app_net
 
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: web
+    ports:
+      - ${PORT:-3002}:3000
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      NEXT_PUBLIC_API_URL: ${API_URL:-http://api:3000}
+      API_URL: ${API_URL:-http://api:3000}
+    healthcheck:
+      test: [ "CMD", "lsof", "-t", "-i:3000" ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    networks:
+      - app_net
+    depends_on:
+      api:
+        condition: service_healthy
+
 networks:
   app_net:
     driver: bridge
