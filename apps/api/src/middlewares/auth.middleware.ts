@@ -10,8 +10,6 @@ export default function authMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  console.log(req.body)
-
   const token = req.headers.authorization?.split(' ').at(-1)
   if (!token) throw new NotFoundError('token not found')
 

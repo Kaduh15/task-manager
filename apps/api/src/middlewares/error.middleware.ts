@@ -12,8 +12,6 @@ export default function errorMiddleware(
 ) {
   console.log('🚀 ~ error:', error)
   if (error instanceof ZodError) {
-    console.log(error)
-
     const errors: {
       [k: string]: string
     } = {}
