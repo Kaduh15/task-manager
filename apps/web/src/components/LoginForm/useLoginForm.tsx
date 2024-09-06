@@ -1,8 +1,9 @@
-import { handlerLogin } from '@/app/actions/handlerLogin'
+import { handlerLogin } from '@/actions/handlerLogin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { toast } from '../ui/use-toast'
+import { useToast } from '../ui/use-toast'
+import { useServerAction } from 'zsa-react'
 
 export const LoginSchema = z.object({
   email: z.string().email({
@@ -16,6 +17,21 @@ export const LoginSchema = z.object({
 export type LoginFormData = z.infer<typeof LoginSchema>
 
 export function useLoginForm() {
+  const { toast } = useToast()
+  const { execute } = useServerAction(handlerLogin, {
+    onSuccess: () => {
+      toast({
+        title: 'Login realizado com sucesso',
+      })
+    },
+    onError: ({ err }) => {
+      toast({
+        title: 'Erro ao logar',
+        description: err.message,
+      })
+    },
+  })
+
   const {
     register,
     handleSubmit,
@@ -24,20 +40,8 @@ export function useLoginForm() {
     resolver: zodResolver(LoginSchema),
   })
 
-  const onSubmit = handleSubmit((data) => {
-    handlerLogin(JSON.stringify(data))
-      .then(() => {
-        toast({
-          title: 'Login realizado com sucesso',
-        })
-      })
-      .catch((err) => {
-        console.log('🚀 ~ LoginPage ~ err:', err)
-        toast({
-          title: 'Erro ao logar',
-          description: err.message,
-        })
-      })
+  const onSubmit = handleSubmit(async ({ email, password }) => {
+    await execute({ email, password })
   })
 
   const emailError = errors.email?.message

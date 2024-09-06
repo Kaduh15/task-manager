@@ -24,8 +24,8 @@ export default function errorMiddleware(
   }
 
   if (error instanceof HttpError) {
-    const status = error.status || HttpStatus.INTERNAL_SERVER_ERROR
-    const message = error.message || 'Something went wrong'
+    const status = error.status
+    const message = error.message
 
     response.status(status).send({
       error: message,

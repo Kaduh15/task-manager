@@ -12,4 +12,5 @@ export const api = axios.create({
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
   },
+  withCredentials: true,
 })

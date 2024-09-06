@@ -1,8 +1,9 @@
-import { handlerRegister } from '@/app/actions/handlerRegister'
+import { handlerRegister } from '@/actions/handlerRegister'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useToast } from '../ui/use-toast'
+import { useServerAction } from 'zsa-react'
 
 export const registerSchema = z.object({
   email: z.string().email({
@@ -20,6 +21,20 @@ export type RegisterFormData = z.infer<typeof registerSchema>
 
 export function useRegisterForm() {
   const { toast } = useToast()
+  const { execute, isPending } = useServerAction(handlerRegister, {
+    onSuccess: () => {
+      toast({
+        title: 'Cadastro realizado com sucesso',
+        description: 'Agora você pode fazer login',
+      })
+    },
+    onError: ({ err }) => {
+      toast({
+        title: 'Erro ao cadastrar',
+        description: err.message,
+      })
+    },
+  })
 
   const {
     register,
@@ -29,21 +44,8 @@ export function useRegisterForm() {
     resolver: zodResolver(registerSchema),
   })
 
-  const onSubmit = handleSubmit((data) => {
-    handlerRegister(JSON.stringify(data))
-      .then(() => {
-        toast({
-          title: 'Cadastro realizado com sucesso',
-          description: 'Agora você pode fazer login',
-        })
-      })
-      .catch((err) => {
-        console.log('🚀 ~ RegisterPage ~ err:', err)
-        toast({
-          title: 'Erro ao cadastrar',
-          description: err.message,
-        })
-      })
+  const onSubmit = handleSubmit(async ({ email, password, name }) => {
+    await execute({ email, password, name })
   })
 
   const emailError = errors.email?.message
@@ -56,5 +58,6 @@ export function useRegisterForm() {
     emailError,
     passwordError,
     nameError,
+    isPending,
   }
 }

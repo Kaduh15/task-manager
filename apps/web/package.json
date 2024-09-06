@@ -27,7 +27,9 @@
     "react-hook-form": "^7.53.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zsa": "^0.6.0",
+    "zsa-react": "^0.2.2"
   },
   "devDependencies": {
     "@rocketseat/eslint-config": "^2.2.2",

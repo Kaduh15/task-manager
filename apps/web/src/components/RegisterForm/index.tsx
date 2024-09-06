@@ -8,8 +8,14 @@ import { useRegisterForm } from './useRegisterForm'
 import Link from 'next/link'
 
 export function RegisterForm() {
-  const { register, onSubmit, emailError, passwordError, nameError } =
-    useRegisterForm()
+  const {
+    register,
+    onSubmit,
+    emailError,
+    passwordError,
+    nameError,
+    isPending,
+  } = useRegisterForm()
 
   return (
     <form
@@ -26,6 +32,7 @@ export function RegisterForm() {
           placeholder="João Silva"
           type="name"
           autoComplete="off"
+          disabled={isPending}
           {...register('name')}
         />
 
@@ -40,6 +47,7 @@ export function RegisterForm() {
           placeholder="email@example.com"
           type="email"
           autoComplete="off"
+          disabled={isPending}
           {...register('email')}
         />
 
@@ -54,6 +62,7 @@ export function RegisterForm() {
           placeholder="********"
           type="password"
           autoComplete="off"
+          disabled={isPending}
           {...register('password')}
         />
 
@@ -61,7 +70,9 @@ export function RegisterForm() {
           <p className="text-sm text-red-500">{passwordError}</p>
         )}
       </div>
-      <Button type="submit">Register</Button>
+      <Button disabled={isPending} type="submit">
+        Register
+      </Button>
       <Link className="text-sm text-blue-500 hover:text-blue-300" href="/login">
         Já tem conta?
       </Link>

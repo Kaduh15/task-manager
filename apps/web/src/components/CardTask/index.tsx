@@ -20,9 +20,9 @@ export function CardTask({
   date,
 }: CardTaskProps) {
   const formatData = new Intl.DateTimeFormat('pt-BR', {
-    year: 'numeric',
+    year: '2-digit',
     month: '2-digit',
-    day: 'numeric',
+    day: '2-digit',
   })
 
   const dateFormat = formatData.format(date)

@@ -14,8 +14,6 @@ export class AuthService {
   num: number = 0
 
   async login({ email, password }: LoginUser) {
-    console.log(email, password)
-
     const user = await prisma.user.findUnique({
       where: { email },
     })
@@ -25,7 +23,6 @@ export class AuthService {
     }
 
     const isValidPassword = compareSync(password, user.password)
-    console.log('🚀 ~ AuthService ~ login ~ isValidPassword:', isValidPassword)
 
     if (!isValidPassword) {
       throw new ConflictError('Email or password is invalid')
@@ -39,8 +36,6 @@ export class AuthService {
   }
 
   async register({ email, name, password }: CreateUser) {
-    console.log(email, name, password)
-
     const hasEmail = await prisma.user.findUnique({
       where: { email },
     })
