@@ -53,6 +53,7 @@ export class TaskService {
     const { title, description, completed, createdAt, updatedAt, user } = task
 
     return {
+      id,
       title,
       description,
       completed,
@@ -71,9 +72,10 @@ export class TaskService {
       include: { user: true },
     })
 
-    const { completed, createdAt, updatedAt, user } = task
+    const { completed, createdAt, updatedAt, user, id } = task
 
     return {
+      id,
       title,
       description,
       completed,
@@ -108,6 +110,7 @@ export class TaskService {
     const { completed, createdAt, updatedAt, user } = updatedTask
 
     return {
+      id,
       title: updatedTask.title,
       description: updatedTask.description,
       completed,
