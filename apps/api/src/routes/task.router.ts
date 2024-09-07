@@ -17,6 +17,6 @@ taskRouter.post('/', taskController.create)
 taskRouter.put('/:id/un-completed', taskController.unCompleted)
 taskRouter.put('/:id/completed', taskController.completed)
 taskRouter.put('/:id', taskController.update)
-taskRouter.delete('/', taskController.delete)
+taskRouter.delete('/:id', taskController.delete)
 
 export { taskRouter }

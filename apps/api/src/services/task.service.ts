@@ -13,54 +13,30 @@ export type GetTaskById = Pick<Task, 'id' | 'userId'>
 
 export class TaskService {
   getAll = async (id: string) => {
-    const tasks = await prisma.task.findMany({
-      where: { userId: id },
-      include: { user: true },
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: { Task: true },
     })
 
-    if (!tasks) {
+    if (!user) {
       throw new NotFoundError('User not found')
     }
 
-    const { user, tasks: tasksData } = tasks.reduce(
-      (acc, task, index) => {
-        if (index === 0) {
-          acc.user = {
-            id: task.user.id,
-            name: task.user.name,
-          }
-        }
-
-        acc.tasks.push({
-          id: task.id,
-          title: task.title,
-          description: task.description,
-          completed: task.completed,
-          createdAt: task.createdAt,
-          updatedAt: task.updatedAt,
-        })
-
-        return acc
-      },
-      {
-        user: { id: '', name: '' },
-        tasks: [] as {
-          id: string
-          title: string
-          description: string | null
-          completed: boolean
-          createdAt: Date
-          updatedAt: Date
-        }[],
-      },
-    )
+    const tasks = user.Task.map((task) => ({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      completed: task.completed,
+      createdAt: task.createdAt,
+      updatedAt: task.updatedAt,
+    }))
 
     return {
       user: {
         id: user.id,
         name: user.name,
       },
-      tasks: tasksData,
+      tasks,
     }
   }
 
