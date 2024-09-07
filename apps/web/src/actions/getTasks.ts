@@ -1,6 +1,7 @@
 'use server'
 
 import { api } from '@/lib/api'
+import { cookies } from 'next/headers'
 import { createServerAction } from 'zsa'
 
 export type Task = {
@@ -21,9 +22,15 @@ export type GetAllTAsksResponse = {
 }
 
 export const getTasksAction = createServerAction().handler(async () => {
-  const response = await api.get<GetAllTAsksResponse>('/task').catch(() => {
-    throw new Error('Error ao buscar tarefas')
-  })
+  const response = await api
+    .get<GetAllTAsksResponse>('/task', {
+      headers: {
+        Authorization: `Bearer ${cookies().get('token')?.value}`,
+      },
+    })
+    .catch(() => {
+      throw new Error('Error ao buscar tarefas')
+    })
 
   return response.data
 })

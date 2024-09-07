@@ -2,6 +2,7 @@
 
 import { api } from '@/lib/api'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
 import z from 'zod'
 import { createServerAction } from 'zsa'
 
@@ -16,10 +17,19 @@ export const addTaskAction = createServerAction()
     const { title, description } = input
 
     await api
-      .post('/task', {
-        title,
-        description,
-      })
+      .post(
+        '/task',
+        {
+          title,
+          description,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${cookies().get('token')?.value}`,
+          },
+        },
+      )
       .catch(() => {
         throw new Error('Erro ao adicionar tarefa')
       })

@@ -2,6 +2,7 @@
 
 import { api } from '@/lib/api'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
 import { z } from 'zod'
 import { createServerAction } from 'zsa'
 
@@ -10,9 +11,16 @@ export const deleteTaskAction = createServerAction()
   .handler(async ({ input }) => {
     const { id } = input
 
-    await api.delete(`/task/${id}`).catch(() => {
-      throw new Error('Erro ao deletar tarefa')
-    })
+    await api
+      .delete(`/task/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${cookies().get('token')?.value}`,
+        },
+      })
+      .catch(() => {
+        throw new Error('Erro ao deletar tarefa')
+      })
 
     revalidatePath('/')
   })

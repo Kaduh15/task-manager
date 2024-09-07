@@ -2,6 +2,7 @@
 
 import { api } from '@/lib/api'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { createServerAction } from 'zsa'
@@ -16,15 +17,21 @@ export const editTaskAction = createServerAction()
   )
   .handler(async ({ input }) => {
     const { id, title, description } = input
-    console.log('🚀 ~ .handler ~ { id, title, description }:', {
-      id,
-      title,
-      description,
-    })
 
-    await api.put(`/task/${id}`, { title, description }).catch(() => {
-      throw new Error('Erro ao atualizar tarefa')
-    })
+    await api
+      .put(
+        `/task/${id}`,
+        { title, description },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${cookies().get('token')?.value}`,
+          },
+        },
+      )
+      .catch(() => {
+        throw new Error('Erro ao atualizar tarefa')
+      })
 
     revalidatePath('/')
     redirect('/')
