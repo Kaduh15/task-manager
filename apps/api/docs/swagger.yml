@@ -1,427 +1,529 @@
 openapi: 3.0.0
 info:
-  title: Task Management API
   description: API para gerenciamento de tarefas
+  title: Task Management API
   version: 1.0.0
+
 servers:
   - url: ${URL_DEPLOY}
     description: Servidor local
 
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
   schemas:
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        name:
-          type: string
-          example: "Carlos Eduardo"
-        email:
-          type: string
-          format: email
-          example: "carlos@example.com"
-
-    Task:
-      type: object
-      properties:
-        id:
-          type: string
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        title:
-          type: string
-          example: "Estudar Swagger"
-        description:
-          type: string
-          example: "Estudar a documentação do Swagger para melhorar as habilidades."
-        isCompleted:
-          type: boolean
-          example: false
-        createdAt:
-          type: string
-          format: date-time
-          example: "2024-08-26T14:48:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2024-08-26T15:00:00.000Z"
-
-    RegisterRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          format: text
-          example: "dfsdfsdfaa43rwer23r"
-        name:
-          type: string
-          example: "Carlos Eduardo"
-        email:
-          type: string
-          format: email
-          example: "carlos@example.com"
-
-    LoginRequest:
-      type: object
-      properties:
-        email:
-          type: string
-          format: email
-          example: "carlos@example.com"
-        password:
-          type: string
-          format: password
-          example: "strongPassword123"
-
-    LoginResponse:
-      type: object
-      properties:
-        token:
-          type: string
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-
-    TaskRequest:
-      type: object
-      properties:
-        title:
-          type: string
-          example: "Nova Tarefa"
-        description:
-          type: string
-          example: "Descrição da nova tarefa."
-
-    TaskResponse:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Task'
-
     Error:
-      type: object
       properties:
         message:
           type: string
+      type: object
+    LoginRequest:
+      properties:
+        email:
+          example: usuario@example.com
+          format: email
+          type: string
+        password:
+          example: strongPassword123
+          format: password
+          type: string
+      type: object...
+          type: string
+      type: object
+    RegisterRequest:
+      properties:
+        email:
+          example: usuario@example.com
+          format: email
+          type: string
+        id:
+          example: dfsdfsdfaa43rwer23r
+          format: text
+          type: string
+        name:
+          example: Usuario Eduardo
+          type: string
+      type: object
+    RegisterResponse:
+      properties:
+        email:
+          example: usuario@gmail.com
+          type: string
+        id:
+          example: cm0sdvpas0002vrpn6fcdfsdfsdf
+          type: string
+        name:
+          example: usuario
+          type: string
+        token:
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbTBzZHZwYXMwMDAydnJwbjZmY2x...
+          type: string
+    Task:
+      properties:
+        createdAt:
+          example: '2024-08-26T14:48:00.000Z'
+          format: date-time
+          type: string
+        description:
+          example: "Estudar a documentação do Swagger para melhorar as habilidades."
+          type: string
+        id:
+          example: 123e4567-e89b-12d3-a456-426614174000
+          type: string
+        isCompleted:
+          example: false
+          type: boolean
+        title:
+          example: Estudar Swagger
+          type: string
+        updatedAt:
+          example: '2024-08-26T15:00:00.000Z'
+          format: date-time
+          type: string
+        user:
+          properties:
+            id:
+              example: cm0pqskf0000010q9fh8dfsdfsdf
+              type: string
+            name:
+              example: User
+              type: string
+          type: object
+      type: object
+    TaskRequest:
+      properties:
+        description:
+          example: "Descrição da nova tarefa."
+          type: string
+        title:
+          example: Nova Tarefa
+          type: string
+      type: object
+    TaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/Task'
+    Error:
+      - $ref: '#/components/schemas/Task'
+
+    Error:
+      type: object
+    User:
+      properties:
+        email:
+          example: usuario@example.com
+          format: email
+          type: string
+        id:
+          example: 123e4567-e89b-12d3-a456-426614174000
+          type: string
+        name:
+          example: Usuario Eduardo
+          type: string
+      type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
 
 paths:
-  /api/auth/register:
-    post:
-      summary: Cadastro de usuário
-      description: Registra um novo usuário.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                password:
-                  type: string
-              required:
-                - name
-                - email
-                - password
-      responses:
-        '201':
-          description: Usuário registrado com sucesso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  name:
-                    type: string
-                  email:
-                    type: string
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
   /api/auth/login:
     post:
-      summary: Login do usuário
-      description: Autentica um usuário e retorna um token JWT.
+      description: "Autentica um usuário e retorna um token JWT."
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              type: object
               properties:
                 email:
+                  example: user@gmail.com
                   type: string
                 password:
+                  example: user1234
                   type: string
               required:
                 - email
                 - password
+              type: object
+        required: true
       responses:
         '200':
-          description: Autenticado com sucesso
           content:
             application/json:
               schema:
-                type: object
                 properties:
                   token:
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbTBwcXNrZjAwMDAwMTBxOWZoOHl...
                     type: string
+                type: object
+          description: Autenticado com sucesso
         '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '401':
-          description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
-  /api/task/:
-    get:
-      summary: Listar tarefas
-      description: Lista todas as tarefas do usuário autenticado.
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Sucesso
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Task'
-        '401':
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
+      summary: "Login do usuário"
+  /api/auth/register:
     post:
-      summary: Criar nova tarefa
-      description: Adiciona uma nova tarefa para o usuário autenticado.
-      security:
-        - bearerAuth: []
+      description: "Registra um novo usuário."
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Task'
+              properties:
+                email:
+                  type: string
+                name:
+                  type: string
+                password:
+                  type: string
+              required:
+              - name
+              - email
+              - password
+              type: object
+        required: true
       responses:
         '201':
-          description: Tarefa criada com sucesso
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
+                properties:
+                  email:
+                    example: usuario@gmail.com
+                    type: string
+                  id:
+                    example: cm0sdvpas0002vrpn6fcdfsdfsdf
+                    type: string
+                  name:
+                    example: usuario
+                    type: string
+                  token:
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbTBzZHZwYXMwMDAydnJwbjZmY2x...
+                    type: string
+                type: object
+          description: Usuario criado com sucesso
         '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/task/{id}:
+      summary: "Cadastro de usuário"
+  /api/task/:
     get:
-      summary: Obter tarefa por ID
-      description: Retorna uma tarefa específica pelo ID.
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
+      description: "Lista todas as tarefas do usuário autenticado."
       responses:
         '200':
-          description: Sucesso
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                properties:
+                  user:
+                    properties:
+                      id:
+                        example: cm0pqskf0000010q9fh8dfsdfsdf
+                        type: string
+                      name:
+                        example: User
+                        type: string
+                    type: object
+                  tasks:
+                    items:
+                      properties:
+                        completed:
+                          example: false
+                          type: boolean
+                        createdAt:
+                          example: '2024-09-07T15:14:35.000Z'
+                          format: date-time
+                          type: string
+                        description:
+                          example: "Estudar a documentação do Swagger para as habilidades."
+                          type: string
+                        id:
+                          example: cm0sad75k0003x86x6agdfsdfsdf
+                          type: string
+                        title:
+                          example: Estudar Swagger
+                          type: string
+                        updatedAt:
+                          example: '2024-09-07T16:23:42.325Z'
+                          format: date-time
+                          type: string
+                      type: object
+                    type: array
+                type: object
+          description: Uma lista de tarefas
         '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-    put:
-      summary: Atualizar tarefa
-      description: Atualiza o título e a descrição de uma tarefa existente.
       security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
+      - bearerAuth: []
+      summary: Listar tarefas
+    post:
+      description: "Adiciona uma nova tarefa para o usuário autenticado."
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Task'
+              properties:
+                description:
+                  example: "Estudar a documentação do Swagger para melhorar as habilidades."
+                  type: string
+                title:
+                  example: Estudar Swagger
+                  type: string
+              type: object
       responses:
-        '200':
-          description: Tarefa atualizada com sucesso
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  completed:
+                    example: false
+                    type: boolean
+                  createdAt:
+                    example: '2024-09-07T16:56:34.333Z'
+                    format: date-time
+                    type: string
+                  description:
+                    example: "Estudar a documentação do Swagger para melhorar as habilidades."
+                    type: string
+                  id:
+                    example: cm0se1wwm0001uoos8vgdfsdfsdf
+                    type: string
+                  title:
+                    example: Estudar Swagger
+                    type: string
+                  updatedAt:
+                    example: '2024-09-07T16:56:34.333Z'
+                    format: date-time
+                    type: string
+                  user:
+                    properties:
+                      id:
+                        example: cm0pqskf0000010q9fh8dfsdfsdf
+                        type: string
+                      name:
+                        example: User
+                        type: string
+                    type: object
+                type: object
+          description: arefa criada com sucesso
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
+          description: Tarefa criada com sucesso
         '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-    delete:
-      summary: Excluir tarefa
-      description: Exclui uma tarefa existente.
       security:
-        - bearerAuth: []
+      - bearerAuth: []
+      summary: Criar nova tarefa
+  /api/task/{id}:
+    delete:
+      description: Exclui uma tarefa existente.
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
       responses:
         '204':
-          description: Tarefa excluída com sucesso
+          description: "Tarefa excluída com sucesso"
         '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '404':
-          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
+          description: Not Found
+      security:
+      - bearerAuth: []
+      summary: Excluir tarefa
+    get:
+      description: "Retorna uma tarefa específica pelo ID."
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Sucesso
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+      security:
+      - bearerAuth: []
+      summary: Obter tarefa por ID
+    put:
+      description: "Atualiza o título e a descrição de uma tarefa existente."
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                description:
+                  example: "Estudar a documentação do Swagger para as habilidades."
+                  type: string
+                title:
+                  example: Estudar Swagger
+                  type: string
+                completed:
+                  example: true
+                  type: boolean
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Tarefa atualizada com sucesso
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+      security:
+      - bearerAuth: []
+      summary: Atualizar tarefa
   /api/task/{id}/completed:
     put:
-      summary: Marcar tarefa como concluída
-      description: Marca uma tarefa como concluída.
-      security:
-        - bearerAuth: []
+      description: "Marca uma tarefa como concluída."
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
       responses:
         '200':
-          description: Tarefa marcada como concluída
+          description: "Tarefa marcada como concluída"
         '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '404':
-          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
+          description: Not Found
+      security:
+      - bearerAuth: []
+      summary: "Marcar tarefa como concluída"
   /api/task/{id}/un-completed:
     put:
-      summary: Marcar tarefa como não concluída
-      description: Marca uma tarefa como não concluída.
-      security:
-        - bearerAuth: []
+      description: "Marca uma tarefa como não concluída."
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
       responses:
         '200':
-          description: Tarefa marcada como não concluída
+          description: "Tarefa marcada como não concluída."
         '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '404':
-          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+          description: Not Found
+      security:
+      - bearerAuth: []
+      summary: "Marcar tarefa como não concluída."
