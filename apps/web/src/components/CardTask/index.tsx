@@ -1,54 +1,72 @@
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../ui/card'
+'use client'
+
+import { toggleCompleteTaskAction } from '@/actions/toggleCompleteTask'
+import { useServerAction } from 'zsa-react'
+import { Checkbox } from '../ui/checkbox'
+import { useToast } from '../ui/use-toast'
+import { Pencil, Trash2 } from 'lucide-react'
+import { deleteTaskAction } from '@/actions/deleteTask'
+import { Router } from 'next/router'
+import { useRouter } from 'next/navigation'
+import { useCard } from './useCard'
 
 export type CardTaskProps = {
   title: string
-  description: string
   isCompleted: boolean
-  date: Date
+  description: string
+  id: string
 }
 
 export function CardTask({
   title,
-  description,
   isCompleted,
-  date,
+  id,
+  description,
 }: CardTaskProps) {
-  const formatData = new Intl.DateTimeFormat('pt-BR', {
-    year: '2-digit',
-    month: '2-digit',
-    day: '2-digit',
-  })
-
-  const dateFormat = formatData.format(date)
+  const {
+    deleteTaskWrapper,
+    handleEditTask,
+    isPendingDelete,
+    isPendingToggleCompleted,
+    toggleCompleteTask,
+  } = useCard({ id, isCompleted })
 
   return (
-    <Card
+    <div
       data-completed={isCompleted}
-      className="min-w-44 max-w-96 rounded-lg p-4 shadow-sm data-[completed='true']:border-green-500 data-[completed='true']:text-zinc-700"
+      data-pending={isPendingToggleCompleted || isPendingDelete}
+      className="group flex w-full cursor-pointer items-center gap-4 rounded-lg border p-4 hover:bg-gray-100 hover:text-zinc-900 data-[pending=true]:pointer-events-none data-[pending=true]:cursor-wait data-[pending=true]:bg-gray-200 data-[completed=true]:text-zinc-400 data-[completed=true]:hover:text-zinc-400"
     >
-      <CardHeader className="flex justify-between">
-        <CardTitle className="text-lg font-bold">
-          {isCompleted ? <del>{title}</del> : title}
-        </CardTitle>
-        <CardDescription className="mt-2 text-muted-foreground">
-          {description}
-        </CardDescription>
-      </CardHeader>
-      <CardFooter className="mt-2 flex items-center justify-between">
-        <span>Data: {dateFormat}</span>
-        <span
-          data-completed={isCompleted}
-          className='data-[completed="true"]:text-green-500'
+      <Checkbox
+        className="size-5 border-2 hover:border-zinc-900 group-hover:border-zinc-900"
+        checked={isCompleted}
+        onCheckedChange={toggleCompleteTask}
+        disabled={isPendingToggleCompleted}
+        id={id}
+      />
+      <div className="flex w-full flex-col gap-2">
+        <label
+          htmlFor={id}
+          className="cursor-pointer text-xl font-bold group-data-[completed=true]:text-zinc-400 group-data-[completed=true]:line-through"
         >
-          Status: {isCompleted ? 'Completed' : 'Pending'}
-        </span>
-      </CardFooter>
-    </Card>
+          {title}
+        </label>
+        {description && (
+          <p className="w-[25ch] flex-1 truncate text-sm text-zinc-400">
+            {description}
+          </p>
+        )}
+      </div>
+      <div className="flex size-fit flex-col gap-4">
+        <Trash2
+          onClick={deleteTaskWrapper}
+          className="size-6 cursor-pointer rounded bg-zinc-300 p-1 text-zinc-900 hover:bg-zinc-800 hover:text-zinc-400"
+        />
+        <Pencil
+          onClick={handleEditTask}
+          className="size-6 cursor-pointer rounded bg-zinc-300 p-1 text-zinc-900 hover:bg-zinc-800 hover:text-zinc-400"
+        />
+      </div>
+    </div>
   )
 }

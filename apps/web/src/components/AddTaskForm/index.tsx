@@ -55,7 +55,7 @@ export function AddTaskForm() {
   const descriptionErrors = errors.description?.message
 
   return (
-    <form onSubmit={onSubmit} className="rounded-lg bg-card p-6 shadow-md">
+    <form onSubmit={onSubmit} className="rounded-lg bg-card shadow-md">
       <h2 className="mb-4 text-xl font-bold">Adicionar Tarefa</h2>
       <div className="space-y-4">
         <Input
@@ -70,7 +70,9 @@ export function AddTaskForm() {
           {...register('description')}
         />
         {descriptionErrors && <p className="text-error">{descriptionErrors}</p>}
-        <Button disabled={isPending}>Add Task</Button>
+        <Button className="justify-items-end" disabled={isPending}>
+          Add Task
+        </Button>
       </div>
     </form>
   )

@@ -2,8 +2,8 @@
 
 import { api } from '@/lib/api'
 import { revalidatePath } from 'next/cache'
-import { createServerAction } from 'zsa'
 import z from 'zod'
+import { createServerAction } from 'zsa'
 
 export const addTaskAction = createServerAction()
   .input(
@@ -14,14 +14,15 @@ export const addTaskAction = createServerAction()
   )
   .handler(async ({ input }) => {
     const { title, description } = input
-    const response = await api.post('/task', {
-      title,
-      description,
-    })
 
-    if (response.status !== 201) {
-      throw new Error('Erro ao adicionar tarefa')
-    }
+    await api
+      .post('/task', {
+        title,
+        description,
+      })
+      .catch(() => {
+        throw new Error('Erro ao adicionar tarefa')
+      })
 
     revalidatePath('/')
   })
