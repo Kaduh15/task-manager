@@ -12,11 +12,15 @@ export const toggleCompleteTaskAction = createServerAction()
     const { id, completed } = input
 
     await api
-      .put(`/task/${id}/${completed ? 'un-completed' : 'completed'}`, null, {
-        headers: {
-          Authorization: `Bearer ${cookies().get('token')?.value}`,
+      .put(
+        `/task/${id}/${completed ? 'un-completed' : 'completed'}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${cookies().get('token')?.value}`,
+          },
         },
-      })
+      )
       .catch(() => {
         throw new Error(
           `Error ao ${completed ? 'desmarcar' : 'marcar'} tarefa como completa`,
