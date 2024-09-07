@@ -71,7 +71,7 @@ export function AddTaskForm() {
         />
         {descriptionErrors && <p className="text-error">{descriptionErrors}</p>}
         <Button className="justify-items-end" disabled={isPending}>
-          Add Task
+          Adicionar
         </Button>
       </div>
     </form>
