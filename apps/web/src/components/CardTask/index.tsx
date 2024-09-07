@@ -1,13 +1,7 @@
 'use client'
 
-import { toggleCompleteTaskAction } from '@/actions/toggleCompleteTask'
-import { useServerAction } from 'zsa-react'
-import { Checkbox } from '../ui/checkbox'
-import { useToast } from '../ui/use-toast'
 import { Pencil, Trash2 } from 'lucide-react'
-import { deleteTaskAction } from '@/actions/deleteTask'
-import { Router } from 'next/router'
-import { useRouter } from 'next/navigation'
+import { Checkbox } from '../ui/checkbox'
 import { useCard } from './useCard'
 
 export type CardTaskProps = {
