@@ -4,7 +4,7 @@ info:
   description: API para gerenciamento de tarefas
   version: 1.0.0
 servers:
-  - url: http://localhost:3001
+  - url: ${URL_DEPLOY}
     description: Servidor local
 
 components:

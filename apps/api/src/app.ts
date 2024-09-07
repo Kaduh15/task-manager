@@ -6,12 +6,21 @@ import YAML from 'yamljs'
 
 import 'express-async-errors'
 
+import { env } from '@/env'
 import errorMiddleware from '@/middlewares/error.middleware'
 import loggerMiddleware from '@/middlewares/logger.middleware'
 import * as routes from '@/routes'
 
 const swaggerPath = path.resolve(__dirname, '../docs/swagger.yml')
 const swaggerDocument = YAML.load(swaggerPath)
+
+if (env.URL_DEPLOY) {
+  swaggerDocument.servers = [
+    {
+      url: env.URL_DEPLOY,
+    },
+  ]
+}
 
 class App {
   public app: express.Express
@@ -37,7 +46,7 @@ class App {
       }),
     )
     this.app.use(loggerMiddleware)
-    this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+    this.app.use('/docs', swaggerUi.serve)
   }
 
   private routes(): void {
