@@ -103,13 +103,13 @@ Caso prefira rodar a aplicação sem Docker, siga os passos abaixo:
 
 1. Navegue até a pasta do backend e instale as dependências:
    ```bash
-   cd backend
+   cd apps/api
    pnpm install
    ```
 
 2. Faça o mesmo para o frontend:
    ```bash
-   cd ../frontend
+   cd ../web
    pnpm install
    ```
 
