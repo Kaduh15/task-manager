@@ -95,7 +95,7 @@ As URLs podem levar alguns segundos para carregar devido à suspensão automáti
    pnpm compose:down
    ```
 
-5. A aplicação estará disponível em `http://localhost:3000` (Frontend) e `http://localhost:4000` (Backend).
+5. A aplicação estará disponível em `http://localhost:3001` (Frontend) e `http://localhost:3002` (Backend).
 
 ## 🧑‍💻 Execução sem Docker
 
